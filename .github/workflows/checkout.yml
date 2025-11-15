@@ -10,4 +10,4 @@ jobs:
       - name: checkout
         uses: actions/checkout@v5.0.0
       - name: listing contents
-        run: ls -alhR ~
+        run: ls -alhR /home/runner/work/calculator-app-finished
