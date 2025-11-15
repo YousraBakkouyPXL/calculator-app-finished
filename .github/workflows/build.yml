@@ -18,4 +18,4 @@ jobs:
       - name: listing content    
         run: ls -alhR 
       - name: bundling code to zip
-        run: zip -r ./
+        run: zip -r code.zip ./
