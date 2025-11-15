@@ -1,0 +1,19 @@
+name: Dependencies example
+on:
+  workflow_dispatch:
+
+jobs: 
+  checkout_job:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: checkout
+        uses: actions/checkout@v5.0.0
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+      - name: Install Dependencies
+        run: npm install
+      - name: listing content    
+        run: ls -alhR 
