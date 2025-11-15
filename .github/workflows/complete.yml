@@ -22,4 +22,4 @@ jobs:
       - name: unit test
         run: npm test
       - name: test reporter
-        uses: actions/action-test-reporter@v1.3.0
+        uses: mridang/action-test-reporter@v1.5.0
