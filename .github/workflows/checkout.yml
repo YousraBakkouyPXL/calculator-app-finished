@@ -4,12 +4,10 @@ on:
 
 jobs: 
   checkout_job:
-    runs-on: ubuntu_latest
+    runs-on: ubuntu-latest
     
     steps:
       - name: checkout
         uses: actions/checkout@v5.0.0
       - name: listing contents
         run: ls -alhR calculator-app-finished
-        
-    
