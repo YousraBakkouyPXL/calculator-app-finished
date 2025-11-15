@@ -1,0 +1,15 @@
+name: Checkout example
+on:
+  workflow_dispatch:
+
+jobs: 
+  checkout_job:
+    runs-on: ubuntu_latest
+    
+    steps:
+      - name: checkout
+        uses: actions/checkout@v5.0.0
+      - name: listing contents
+        run: ls -alhR calculator-app-finished
+        
+    
