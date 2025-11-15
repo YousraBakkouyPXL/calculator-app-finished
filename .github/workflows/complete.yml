@@ -21,3 +21,6 @@ jobs:
         run: zip -r code.zip ./
       - name: unit test
         run: npm test
+      - name: test reporter
+        run: npm publish
+        if: github.event_name == 'push'
