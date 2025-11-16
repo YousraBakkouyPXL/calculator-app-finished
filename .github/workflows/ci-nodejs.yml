@@ -1,0 +1,34 @@
+name: ci-Nodejs
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v5.0.0
+        
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          
+      - name: Install Dependencies
+        run: npm install
+        
+      - name: Run tests and generate coverage
+        run: npm test -- --coverage
+        
+      - name: test reporter
+        uses: mridang/action-test-reporter@v1.7.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          coverage-file: ./coverage/clover.xml # Path to your clover, cobertura, jacoco, or lcov file
+          working-directory: ./
