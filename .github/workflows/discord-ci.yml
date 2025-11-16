@@ -1,0 +1,64 @@
+name: CI with Discord
+
+on:
+  push:
+    branches:
+      - main
+      - "feature/**"
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests with coverage
+        run: npm test -- --coverage
+
+      - name: Extract coverage
+        id: cov
+        run: |
+          PERCENT=$(grep -oPm1 "(?<=line-rate=\")\d+\.\d+" coverage/clover.xml)
+          echo "coverage=$PERCENT" >> $GITHUB_OUTPUT
+
+      - name: Discord notification (main branch only)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          STATUS="❌ FAILED"
+          if [ "${{ job.status }}" = "success" ]; then STATUS="✅ SUCCESS"; fi
+          curl -H "Content-Type: application/json" \
+            -d "{\"content\": \"Main CI ${STATUS} — Coverage: ${{ steps.cov.outputs.coverage }}\"}" \
+            ${{ secrets.DISCORD_WEBHOOK }}
+
+      - name: Discord notification (feature branches)
+        if: startsWith(github.ref, 'refs/heads/feature/')
+        run: |
+          BRANCH=${GITHUB_REF#refs/heads/}
+          STATUS="❌ FAILED"
+          if [ "${{ job.status }}" = "success" ]; then STATUS="✅ SUCCESS"; fi
+          curl -H "Content-Type: application/json" \
+            -d "{\"content\": \"Feature branch **$BRANCH** CI ${STATUS}\"}" \
+            ${{ secrets.DISCORD_WEBHOOK }}
+
+      - name: PR comment
+        if: github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body: |
+            ## 🧪 CI Status
+            **Result:** ${{ job.status }}
+            **Coverage:** ${{ steps.cov.outputs.coverage }}
+
