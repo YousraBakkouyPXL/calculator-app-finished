@@ -3,9 +3,6 @@ name: Docker CI
 on:
   workflow_dispatch:   # Enkel manueel starten
   
-env:
-  DOCKERHUB_USER: amezian9
-  
 jobs:
   docker:
     runs-on: ubuntu-latest
@@ -24,9 +21,9 @@ jobs:
         id: meta
         run: |
           if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
-            echo "tags=${{ env.DOCKERHUB_USERNAME }}/calculator-app-finished:${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
+            echo "tags=${ secrets.DOCKERHUB_USERNAME }/calculator-app-finished:${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
           else
-            echo "tags=${{ env.DOCKERHUB_USERNAME }}/calculator-app-finished:latest" >> $GITHUB_OUTPUT
+            echo "tags=${ secrets.DOCKERHUB_USERNAME }/calculator-app-finished:latest" >> $GITHUB_OUTPUT
           fi
 
       - name: Build and Push Docker image
