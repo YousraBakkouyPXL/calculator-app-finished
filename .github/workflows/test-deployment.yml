@@ -1,0 +1,22 @@
+name: cd oefening
+on:
+  workflow_dispatch:
+jobs:
+  idk:
+    runs-on: self-hosted
+    steps:
+      - name: Pull latest image from Docker Hub
+        run: |
+          docker pull amezian9d/calculator-app-finished:latest
+
+      - name: Stop running containers
+        run: |
+          docker ps -q --filter "name=calculator-app-finished" | xargs -r docker stop
+          docker ps -q --filter "name=calculator-app-finished" | xargs -r docker rm
+
+      - name: Run latest container
+        run: |
+          docker run -d \
+            --name calculator-app-finished \
+            -p 80:3000 \
+            amezian9/calculator-app-finished:latest
